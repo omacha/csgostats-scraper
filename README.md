@@ -1,0 +1,1 @@
+# csgostats-scraper
