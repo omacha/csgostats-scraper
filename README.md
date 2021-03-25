@@ -1,1 +1,1 @@
-# csgostats-scraper
+# CSGOstats.gg Scraper
