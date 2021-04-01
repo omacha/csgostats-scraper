@@ -12,14 +12,16 @@ from csgostats import *
 try:
     browser = init_browser("https://csgostats.gg/")
 
-    if browser != None:
-        matches = get_match_list_for_userid(browser, "76561198039683050")
-
-        idx = 0
-        for m in matches:
-            get_match(browser, m)
-
-            idx += 1
+    if browser is None:
+        players = [
+            Player("76561198039683050", "omacha"), 
+            Player("76561198076430753", "pit_phil")
+        ]
+        
+        for p in players:
+            matches = get_match_list_for_userid(browser, p.id)
+            for m in matches:
+                get_match(browser, m)
     else:
         print("browser is not defined")
 except Exception:

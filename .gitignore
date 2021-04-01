@@ -1,3 +1,7 @@
+# Project Specific
+client/cfg.py
+client/cookies.pkl
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,4 +131,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-cookies.pkl

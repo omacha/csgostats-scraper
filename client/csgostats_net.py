@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
+
 def init_browser(url):
     browser = webdriver.Firefox()
 
@@ -20,12 +21,14 @@ def init_browser(url):
 
     return browser
 
+
 def destroy_browser(browser):
     cookies = browser.get_cookies()
-    with open("cookies.pkl","wb") as wbf:
+    with open("cookies.pkl", "wb") as wbf:
         pickle.dump(cookies, wbf)
     sleep(5)
     browser.close()
+
 
 def make_request(browser, url, locator, delay=3):
     if browser.current_url != url:
@@ -44,4 +47,3 @@ def make_request(browser, url, locator, delay=3):
         else:
             print("Loading took too much time for ", url)
             return False
-

@@ -4,8 +4,32 @@ from dateutil.parser import parse as parse_date
 
 from csgostats_net import *
 
+class Player():
+    id = ""
+    name = "User"
+    is_enemy = False
+
+    def __init__(self, id, name, is_enemy = False):
+        self.id = str(id)
+        self.name = name
+        self.is_enemy = is_enemy
+
 class MatchInfo():
-    pass
+    id = ""
+    date = None
+    players = None
+
+    def __init__(self, id, date, players):
+        self.id = str(id)
+        if date is str:
+            self.date = parse_date(date)
+        else:
+            self.date = date
+        self.players = players
+
+    def url(self):
+        return "https://csgostats.gg/match/" + self.id
+
 
 def get_match_list_for_userid(browser, steamid):
     url = "https://csgostats.gg/player/" + str(steamid)
@@ -22,13 +46,13 @@ def get_match_list_for(browser, url):
         for row in match_rows: 
             link_elem = row.find_elements_by_css_selector("[title='View Match']")[0]
             href_val = link_elem.get_attribute("href")
-            match_id = re.match(r"^.+(\d+)$", href_val).group()
-            matches.append({'id': match_id, 'url': href_val})
+            match_id = re.match(r"^.+/(\d+)$", href_val).groups()[0]
+            matches.append(MatchInfo(match_id, None, None))
         
     return matches
 
 def get_match(browser, m):
-    req = make_request(browser, m['url'], (By.ID, 'content-tabs'))
+    req = make_request(browser, m.url(), (By.ID, 'content-tabs'))
     if req: 
         date_elem = browser.find_elements_by_css_selector("#match-details>div>div")[-1]
         date_text = date_elem.get_attribute("innerHTML")
@@ -36,7 +60,7 @@ def get_match(browser, m):
 
         match_players_parent = browser.find_elements_by_id("content-tabs")[0]
         banned_players = match_players_parent.find_elements_by_css_selector(".has-banned")
-        print("    Match ", m['id'], " on ", d, " has ", len(banned_players), " banned player(s)")
+        print("  Match ", m.id, " on ", d, " has ", len(banned_players), " banned player(s)")
 
         for banned_player in banned_players:
             player_name_link_elem = banned_player.find_element_by_css_selector("a.player-link")
@@ -45,5 +69,4 @@ def get_match(browser, m):
 
             playerprofile_url = player_name_link_elem.get_attribute("href")
             playersteamid = re.match(r"^.+/(\d+)$", playerprofile_url).groups()[0]
-
-            print("    Banned-player:", player_name, "   //  Steam ID: ", playersteamid)
+            # print("    Banned-player:", player_name, "   //  Steam ID: ", playersteamid)
